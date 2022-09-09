@@ -6,7 +6,7 @@ This script attempts to connect sources to targets in a graph
 using a minimum-cost flow algorithm. Minimum cost flow is solved using
 Google's OR-Tools library: https://developers.google.com/optimization/flow/mincostflow
 
-updated to use python 3
+uses python2.7 
 """
 import argparse
 from ortools.graph import pywrapgraph
@@ -51,7 +51,7 @@ def construct_digraph(edges_file, cap):
 
 def print_graph(graph):
     ''' Print the edges in a graph '''
-    print(('\n'.join(sorted(map(str, graph.edges(data=True))))))
+    print('\n'.join(sorted(map(str, graph.edges(data=True)))))
 
 
 def add_sources_targets(G, sources, targets, idDict, flow):
@@ -84,7 +84,7 @@ def write_output_to_sif(G,out_file_name,idDict):
     '''
 
     out_file = open(out_file_name,"w")
-    names = {v: k for k, v in idDict.items()}
+    names = {v: k for k, v in idDict.iteritems()}
     numE = 0
     for i in range(G.NumArcs()):
         node1 = names[G.Head(i)]
@@ -98,7 +98,7 @@ def write_output_to_sif(G,out_file_name,idDict):
             continue
         numE+=1
         out_file.write(node1+"\t"+node2+"\n")
-    print(("Final network had %d edges" % numE))
+    print("Final network had %d edges" % numE)
     out_file.close()
 
     return
