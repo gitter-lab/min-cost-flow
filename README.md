@@ -11,6 +11,7 @@ Chris S Magnano, Anthony Gitter.
 ## Dependencies
 
 Google's [OR-Tools library](https://developers.google.com/optimization/flow/mincostflow) is required to run this script. 
+> OR-Tools version: 9.3.10497
 
 ## Usage
 `minCostFlow.py [-h] --edges_file EDGES_FILE --sources_file SOURCES_FILE --targets_file TARGETS_FILE [--flow FLOW] --output OUTPUT [--capacity CAPACITY]`
