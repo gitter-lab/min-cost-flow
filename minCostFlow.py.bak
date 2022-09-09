@@ -5,6 +5,8 @@ Edited by Chris Magnano for batch use
 This script attempts to connect sources to targets in a graph
 using a minimum-cost flow algorithm. Minimum cost flow is solved using
 Google's OR-Tools library: https://developers.google.com/optimization/flow/mincostflow
+
+uses python2.7 
 """
 import argparse
 from ortools.graph import pywrapgraph
