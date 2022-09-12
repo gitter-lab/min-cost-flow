@@ -51,7 +51,7 @@ def construct_digraph(edges_file, cap):
 
 def print_graph(graph):
     ''' Print the edges in a graph '''
-    print(('\n'.join(sorted(map(str, graph.edges(data=True))))))
+    print('\n'.join(sorted(map(str, graph.edges(data=True)))))
 
 
 def add_sources_targets(G, sources, targets, idDict, flow):
@@ -98,7 +98,7 @@ def write_output_to_sif(G,out_file_name,idDict):
             continue
         numE+=1
         out_file.write(node1+"\t"+node2+"\n")
-    print(("Final network had %d edges" % numE))
+    print("Final network had %d edges" % numE)
     out_file.close()
 
     return
