@@ -9,7 +9,7 @@ Google's OR-Tools library: https://developers.google.com/optimization/flow/minco
 updated to use python 3
 """
 import argparse
-from ortools.graph import pywrapgraph
+from ortools.graph.python import min_cost_flow
 
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
@@ -25,7 +25,7 @@ def construct_digraph(edges_file, cap):
     directed edges.  Use the specified weight as the edge weight and a default
     capacity of 1.
     '''
-    G = pywrapgraph.SimpleMinCostFlow()
+    G = min_cost_flow.SimpleMinCostFlow()
     idDict = dict() #Hold names to number ids
     curID = 0
     default_capacity = int(cap)
@@ -43,8 +43,8 @@ def construct_digraph(edges_file, cap):
                 curID += 1
             #Google's solver can only handle int weights, so round to the 100th
             w = int((1-(float(tokens[2])))*100)
-            G.AddArcWithCapacityAndUnitCost(idDict[node1],idDict[node2], default_capacity, int(w))
-            G.AddArcWithCapacityAndUnitCost(idDict[node2],idDict[node1], default_capacity, int(w))
+            G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
+            G.add_arc_with_capacity_and_unit_cost(idDict[node2],idDict[node1], default_capacity, int(w))
     idDict["maxID"] = curID
     return G,idDict
 
@@ -71,11 +71,11 @@ def add_sources_targets(G, sources, targets, idDict, flow):
 
     for source in sources:
         if source in idDict:
-            G.AddArcWithCapacityAndUnitCost(idDict["source"],idDict[source], default_capacity, default_weight)
+            G.add_arc_with_capacity_and_unit_cost(idDict["source"],idDict[source], default_capacity, default_weight)
 
     for target in targets:
         if target in idDict:
-            G.AddArcWithCapacityAndUnitCost(idDict[target],idDict["target"], default_capacity, default_weight)
+            G.add_arc_with_capacity_and_unit_cost(idDict[target],idDict["target"], default_capacity, default_weight)
 
 
 def write_output_to_sif(G,out_file_name,idDict):
@@ -87,9 +87,9 @@ def write_output_to_sif(G,out_file_name,idDict):
     names = {v: k for k, v in idDict.items()}
     numE = 0
     for i in range(G.NumArcs()):
-        node1 = names[G.Head(i)]
-        node2 = names[G.Tail(i)]
-        flow = G.Flow(i)
+        node1 = names[G.head(i)]
+        node2 = names[G.tail(i)]
+        flow = G.flow(i)
         if flow <= 0:
             continue
         if node1 in ["source","target"]:
@@ -110,11 +110,11 @@ def min_cost_flow(G, flow, output, idDict):
     filename of the output file.  The graph should have artificial nodes
     named "source" and "target".
     '''
-    G.SetNodeSupply(idDict['source'],int(flow))
-    G.SetNodeSupply(idDict['target'],int(-1*flow))
+    G.set_node_supply(idDict['source'],int(flow))
+    G.set_node_supply(idDict['target'],int(-1*flow))
 
     print("Computing min cost flow")
-    if G.Solve() == G.OPTIMAL:
+    if G.solve() == G.OPTIMAL:
         print("Solved!")
     else:
         print("There was an issue with the solver")
@@ -124,7 +124,7 @@ def min_cost_flow(G, flow, output, idDict):
 
 def main(args):
     ''' Parse a weighted edge list, source list, and target list.  Run
-    min cost flow or k-shortest paths on the graph to find source-target
+    min cost  or k-shortest paths on the graph to find source-target
     paths.  Write the solutions to a file.
     '''
     flow = int(args.flow)
