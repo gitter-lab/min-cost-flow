@@ -9,7 +9,7 @@ Google's OR-Tools library: https://developers.google.com/optimization/flow/minco
 updated to use python 3
 """
 import argparse
-from ortools.graph.python import min_cost_flow
+from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
@@ -25,7 +25,7 @@ def construct_digraph(edges_file, cap):
     directed edges.  Use the specified weight as the edge weight and a default
     capacity of 1.
     '''
-    G = min_cost_flow.SimpleMinCostFlow()
+    G = SimpleMinCostFlow()
     idDict = dict() #Hold names to number ids
     curID = 0
     default_capacity = int(cap)
@@ -86,7 +86,7 @@ def write_output_to_sif(G,out_file_name,idDict):
     out_file = open(out_file_name,"w")
     names = {v: k for k, v in idDict.items()}
     numE = 0
-    for i in range(G.NumArcs()):
+    for i in range(G.num_arcs()):
         node1 = names[G.head(i)]
         node2 = names[G.tail(i)]
         flow = G.flow(i)
