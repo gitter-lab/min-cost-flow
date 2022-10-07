@@ -11,7 +11,7 @@ Chris S Magnano, Anthony Gitter.
 ## Dependencies
 
 Google's [OR-Tools library](https://developers.google.com/optimization/flow/mincostflow) is required to run this script. 
-> OR-Tools version: 9.3.10497
+> OR-Tools version: 9.4.1874
 
 Python 3 is required to run this script
 > verison 3.10.4 or 3.10.7 work best
