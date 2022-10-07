@@ -124,7 +124,7 @@ def min_cost_flow(G, flow, output, idDict):
 
 def main(args):
     ''' Parse a weighted edge list, source list, and target list.  Run
-    min cost  or k-shortest paths on the graph to find source-target
+    min cost flow or k-shortest paths on the graph to find source-target
     paths.  Write the solutions to a file.
     '''
     flow = int(args.flow)
