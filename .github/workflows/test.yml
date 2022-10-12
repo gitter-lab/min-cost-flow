@@ -26,4 +26,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Test with example graph
-      run: python minCostFlow.py --edges_file graphs/graph1/edges.txt --sources_file graphs/graph1/sources.txt --targets_file graphs/graph1/targets.txt --output flow_solution.txt --flow 10 --capacity 1
+      run: python minCostFlow.py --edges_file graphs/graph1/edges.txt --sources_file graphs/graph1/sources.txt --targets_file graphs/graph1/targets.txt --output flow_solution.txt --flow 2 --capacity 1
