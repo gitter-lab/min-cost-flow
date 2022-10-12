@@ -158,9 +158,9 @@ if __name__ == "__main__":
                         required=True)
     parser.add_argument('--flow',
                         help='The amount of flow pushed through the network.',
-                        type=float,
+                        type=int,
                         required=False,
-                        default=1.0)
+                        default=1)
     parser.add_argument('--output',
                         help='Prefix for all output files.',
                         type=str,
