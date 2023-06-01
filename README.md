@@ -3,10 +3,10 @@
 The script `minCostFlow.py` attempts to connect sources to targets in a graph
 using a minimum-cost flow algorithm.
 
-More details of the algorithm can be found in
-[Automating parameter selection to avoid implausible biological pathway models](https://doi.org/10.1101/845834).
+More details of the algorithm can be found in:  
+[Automating parameter selection to avoid implausible biological pathway models](https://doi.org/10.1038/s41540-020-00167-1).
 Chris S Magnano, Anthony Gitter.
-*bioRxiv* 2019. doi:10.1101/845834
+*npj Systems Biology and Applications*, 7:12, 2021.
 
 ## Dependencies
 
