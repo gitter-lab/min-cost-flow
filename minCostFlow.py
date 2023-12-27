@@ -11,6 +11,8 @@ updated to use python 3
 import argparse
 from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
+# global dict for edge, directionality
+
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
     with open(node_file) as node_f:
@@ -33,6 +35,7 @@ def construct_digraph(edges_file, cap):
     with open(edges_file) as edges_f:
         for line in edges_f:
             tokens = line.strip().split()
+            print(tokens)
             node1 = tokens[0]
             if not node1 in idDict:
                 idDict[node1] = curID
@@ -43,6 +46,15 @@ def construct_digraph(edges_file, cap):
                 curID += 1
             #Google's solver can only handle int weights, so round to the 100th
             w = int((1-(float(tokens[2])))*100)
+            # grab directionality d = tokens[3]
+            # append edgepair: d to global dict 
+            # might need to store it twice in both directions for undirected egde?
+            
+            # if d = U:
+            # make a pair of directed edges
+            # elif d = D
+            # make one directed edge from node1 to node2
+            # else: raise Error print(f"d = {d}"")
             G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
             G.add_arc_with_capacity_and_unit_cost(idDict[node2],idDict[node1], default_capacity, int(w))
     idDict["maxID"] = curID
@@ -97,6 +109,10 @@ def write_output_to_sif(G,out_file_name,idDict):
         if node2 in ["source","target"]:
             continue
         numE+=1
+
+        # check the edge in global dict and grab directionality
+        # d = global_dict[(node1, node2)]
+        # out_file.write(node1+"\t"+node2+"\t"+d+"\n")
         out_file.write(node1+"\t"+node2+"\n")
     print("Final network had %d edges" % numE)
     out_file.close()
@@ -132,6 +148,8 @@ def main(args):
     sources = parse_nodes(args.sources_file)
 
     targets = parse_nodes(args.targets_file)
+
+    print(args.edges_file)
 
     G,idDict = construct_digraph(args.edges_file, args.capacity)
 
