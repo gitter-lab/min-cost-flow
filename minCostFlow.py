@@ -149,8 +149,6 @@ def main(args):
 
     targets = parse_nodes(args.targets_file)
 
-    print(args.edges_file)
-
     G,idDict = construct_digraph(args.edges_file, args.capacity)
 
     add_sources_targets(G, sources, targets, idDict, flow)
