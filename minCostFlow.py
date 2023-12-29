@@ -11,7 +11,7 @@ updated to use python 3
 import argparse
 from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
-# global dict for edge, directionality
+# global dict for edge, directionality or adjacney matrix
 
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
