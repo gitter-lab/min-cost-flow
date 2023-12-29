@@ -1,6 +1,6 @@
 A	B	0.98	U
 B	C	0.77	U
-A	D	0.12	U
+A	D	0.12	D
 C	D	0.89	U
 C	E	0.59	U
 C	F	0.50	U
