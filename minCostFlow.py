@@ -59,8 +59,6 @@ def construct_digraph(edges_file, cap):
             else: 
                 raise ValueError (f"d = {d}")
 
-    print(edges_dict)
-    
     idDict["maxID"] = curID
     return G,idDict
 
@@ -103,8 +101,9 @@ def write_output_to_sif(G,out_file_name,idDict):
     names = {v: k for k, v in idDict.items()}
     numE = 0
     for i in range(G.num_arcs()):
-        node1 = names[G.head(i)]
-        node2 = names[G.tail(i)]
+        node1 = names[G.tail(i)]
+        node2 = names[G.head(i)]
+        
         flow = G.flow(i)
         if flow <= 0:
             continue
