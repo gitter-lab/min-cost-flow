@@ -47,17 +47,19 @@ def construct_digraph(edges_file, cap):
             w = int((1-(float(tokens[2])))*100)
             d = tokens[3]
 
-            if d == "U":
+            # TODO: is it better to overwrite the edges or just to throw an error
+            if (node1, node2) in edges_dict:
+                raise KeyError(f"Failed to add the edge ({node1}, {node2}) with weight '{tokens[2]}' and directionality '{d}'. This edge conflicts with an existing '{edges_dict[(node1, node2)]}' edge in the graph.")
+            elif d == "U":
                 edges_dict[(node1, node2)] = "U"
                 edges_dict[(node2, node1)] = "U"
                 G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
                 G.add_arc_with_capacity_and_unit_cost(idDict[node2],idDict[node1], default_capacity, int(w))
-
             elif d == "D":
                 edges_dict[(node1, node2)] = "D"
                 G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
             else: 
-                raise ValueError (f"d = {d}")
+                raise ValueError (f"Cannot add egdge: d = {d}")
 
     idDict["maxID"] = curID
     return G,idDict

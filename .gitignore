@@ -105,3 +105,6 @@ venv.bak/
 
 # data files
 referencePathways/reactome/*.gOut
+
+# output files
+*.sif
