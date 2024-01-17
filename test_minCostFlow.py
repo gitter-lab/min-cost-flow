@@ -5,7 +5,7 @@ import subprocess
 command = "python"
 script = "minCostFlow.py"
 
-for i in range (1,7):
+for i in range (1,8):
     print("test: ",i)
     args = [
     "--edges_file", f"tests/graph{i}/edges.txt",
