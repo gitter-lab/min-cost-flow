@@ -11,7 +11,9 @@ updated to use python 3
 import argparse
 from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
-edges_dict = dict()
+# (node1, node2) : weight
+directed_dict = dict()
+undirected_dict = dict()
 
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
@@ -43,24 +45,49 @@ def construct_digraph(edges_file, cap):
             if not node2 in idDict:
                 idDict[node2] = curID
                 curID += 1
-            #Google's solver can only handle int weights, so round to the 100th
+            #Google's solver can only handle int weights, so round to the 100th 
             w = int((1-(float(tokens[2])))*100)
             d = tokens[3]
+            edge = (node1, node2)
+            sorted_edge = tuple(sorted(edge))
+            
+            if d == "D":
+                if edge in directed_dict:
+                    if w > directed_dict[edge]:
+                        directed_dict[edge] = w
+                # check if sorted edge is in undirected_dict
+                elif sorted_edge in undirected_dict:
+                    # remove edge from undirected_dict
+                    del undirected_dict[sorted_edge]
+                    # add edge to directed_dict (not sorted)
+                    directed_dict[edge] = w
+                else: 
+                    # add edge to directed_dict
+                    directed_dict[edge] = w
 
-            # TODO: is it better to overwrite the edges or just to throw an error
-            if (node1, node2) in edges_dict:
-                raise KeyError(f"Failed to add the edge ({node1}, {node2}) with weight '{tokens[2]}' and directionality '{d}'. This edge conflicts with an existing '{edges_dict[(node1, node2)]}' edge in the graph.")
             elif d == "U":
-                edges_dict[(node1, node2)] = "U"
-                edges_dict[(node2, node1)] = "U"
-                G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
-                G.add_arc_with_capacity_and_unit_cost(idDict[node2],idDict[node1], default_capacity, int(w))
-            elif d == "D":
-                edges_dict[(node1, node2)] = "D"
-                G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
-            else: 
-                raise ValueError (f"Cannot add egdge: d = {d}")
+                # check for edge in directed_edges: skip
+                if edge in directed_dict:
+                    continue
+                elif sorted_edge in undirected_dict:
+                    if w < undirected_dict[sorted_edge]:
+                        undirected_dict[sorted_edge] = w
+                # check if edge in undirected_edges: if weight is lower than newer edge, then replace with newer edges weight
+                # otherwise add edge to undirected_edges dictionary as (node1, node2) = (U, weight)
+                else: 
+                    undirected_dict[sorted_edge] = w
+            else:
+                raise ValueError (f"Cannot add edge: d = {d}")
 
+    # go through and add the edges from directed_dict and undirected_dict to G
+    for key, value in directed_dict.items():
+        print(key, value)
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
+    for key, value in undirected_dict.items():
+        print(key, value)
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[1]],idDict[key[0]], default_capacity, int(value))
+    
     idDict["maxID"] = curID
     return G,idDict
 
@@ -115,8 +142,23 @@ def write_output_to_sif(G,out_file_name,idDict):
             continue
         numE+=1
 
-        d = edges_dict[(node1, node2)]
-        out_file.write(node1+"\t"+node2+"\t"+d+"\n")
+        # for the edge chosen,
+        # // node1 is the tail
+        # // node2 is the head
+        edge = (node1, node2)
+        sorted_edge = tuple(sorted(edge))
+        
+        if edge in directed_dict:
+            out_file.write(node1+"\t"+node2+"\t"+"D"+"\n")
+        elif sorted_edge in undirected_dict:
+            out_file.write(node1+"\t"+node2+"\t"+"U"+"\n")
+        else: 
+            raise KeyError(f"edge {edge} is not in the dicts")
+        # check if (node1, node2) is in directed_edges dict:
+        # write output with a directed edge
+        # otherwise check if (node1, node2) or (node2, node1) is in the undirected_edges dict:
+        # write output with an undirected edge
+        
 
     print("Final network had %d edges" % numE)
     out_file.close()
