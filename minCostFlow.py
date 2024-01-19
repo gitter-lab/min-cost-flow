@@ -46,7 +46,7 @@ def construct_digraph(edges_file, cap):
                 idDict[node2] = curID
                 curID += 1
             # Google's solver can only handle int weights, so round to the 100th 
-            w = int((1-(float(tokens[2])))*100)
+            w = int((1-(float(tokens[2])))*100) # lower the weight from token[2], higher the cost
             d = tokens[3]
             edge = (node1, node2)
             sorted_edge = tuple(sorted(edge))
