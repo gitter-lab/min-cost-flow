@@ -22,7 +22,7 @@ for i in range (1,8):
 
 
 print("\ntesting code correctness")
-for i in range (1,12):
+for i in range (1,14):
     print("graph: ",i)
     args = [
     "--edges_file", f"graphs/graph{i}/edges.txt",

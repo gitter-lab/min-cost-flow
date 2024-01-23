@@ -1,0 +1,53 @@
+The graphs series of graphs are used to check the code's correctness. Except for internal tiebreaking by the solver, each result is deterministic.
+
+graph1:
+A	B	D
+B	D	D
+
+graph2:
+A	B	D
+B	D	D 
+
+graph3: deals with tiebreaking
+A	C	D
+C	D	D
+
+graph4:
+A	B	D
+B	D	D
+
+graph5:
+A	B	U
+B	D	U
+
+graph6: 
+A	B	U
+B	D	U
+
+graph7: deals with tiebreaking
+A	B	U
+B	D	U
+
+graph8:
+A	B	U
+B	D	U
+
+graph9: 
+A	B	D
+B	D	U
+
+graph10:
+A	B	D
+B	D	D
+
+graph11:
+A	B	U
+B	D	U
+
+graph12:
+A	B	D
+B	D	D
+
+graph13:
+A	B	U
+B	D	U
