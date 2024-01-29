@@ -1,6 +1,5 @@
 A   B   0.1	D
 A   B   0.1	U
 B   A   0.1	U
-B   A   0.1	D
 B   C   0.1	D
 B   C   0.1	U

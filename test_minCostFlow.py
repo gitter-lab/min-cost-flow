@@ -5,7 +5,7 @@ import subprocess
 command = "python"
 script = "minCostFlow.py"
 
-print("testing code functionality")
+print("TEST SERIES")
 for i in range (1,8):
 
     print("test: ",i)
@@ -21,7 +21,7 @@ for i in range (1,8):
     subprocess.run(cmd)
 
 
-print("\ntesting code correctness")
+print("\nGRAPHS SERIES")
 for i in range (1,14):
     print("graph: ",i)
     args = [

@@ -53,7 +53,7 @@ def construct_digraph(edges_file, cap):
             
             if d == "D":
                 if edge in directed_dict:
-                    if w > directed_dict[edge]:
+                    if w < directed_dict[edge]:
                         directed_dict[edge] = w
                 elif sorted_edge in undirected_dict:
                     del undirected_dict[sorted_edge]
@@ -65,13 +65,13 @@ def construct_digraph(edges_file, cap):
                 if edge not in directed_dict and sorted_edge not in directed_dict and sorted_edge not in undirected_dict:
                     undirected_dict[sorted_edge] = w
                 elif sorted_edge in undirected_dict:
-                    if w > undirected_dict[sorted_edge]:
+                    if w < undirected_dict[sorted_edge]:
                         undirected_dict[sorted_edge] = w
             else:
                 raise ValueError (f"Cannot add edge: d = {d}")
 
-    # print("undirected_dict: ", undirected_dict)
-    # print("directed_dict: ", directed_dict)
+    print("undirected_dict: ", undirected_dict)
+    print("directed_dict: ", directed_dict)
     # go through and add the edges from directed_dict and undirected_dict to G
     for key, value in directed_dict.items():
         G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
