@@ -11,6 +11,10 @@ updated to use python 3
 import argparse
 from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
+# (node1, node2) : weight
+directed_dict = dict()
+undirected_dict = dict()
+
 def parse_nodes(node_file):
     ''' Parse a list of sources or targets and return a set '''
     with open(node_file) as node_f:
@@ -26,7 +30,7 @@ def construct_digraph(edges_file, cap):
     capacity of 1.
     '''
     G = SimpleMinCostFlow()
-    idDict = dict() #Hold names to number ids
+    idDict = dict() # Hold names to number ids
     curID = 0
     default_capacity = int(cap)
 
@@ -41,10 +45,40 @@ def construct_digraph(edges_file, cap):
             if not node2 in idDict:
                 idDict[node2] = curID
                 curID += 1
-            #Google's solver can only handle int weights, so round to the 100th
-            w = int((1-(float(tokens[2])))*100)
-            G.add_arc_with_capacity_and_unit_cost(idDict[node1],idDict[node2], default_capacity, int(w))
-            G.add_arc_with_capacity_and_unit_cost(idDict[node2],idDict[node1], default_capacity, int(w))
+            # Google's solver can only handle int weights, so round to the 100th 
+            w = int((1-(float(tokens[2])))*100) # lower the weight from token[2], higher the cost
+            d = tokens[3]
+            edge = (node1, node2)
+            sorted_edge = tuple(sorted(edge))
+            
+            if d == "D":
+                if edge in directed_dict:
+                    if w < directed_dict[edge]:
+                        directed_dict[edge] = w
+                elif sorted_edge in undirected_dict:
+                    del undirected_dict[sorted_edge]
+                    directed_dict[edge] = w
+                else: # edge not in directed_dict 
+                    directed_dict[edge] = w
+
+            elif d == "U":
+                if edge not in directed_dict and sorted_edge not in directed_dict and sorted_edge not in undirected_dict:
+                    undirected_dict[sorted_edge] = w
+                elif sorted_edge in undirected_dict:
+                    if w < undirected_dict[sorted_edge]:
+                        undirected_dict[sorted_edge] = w
+            else:
+                raise ValueError (f"Cannot add edge: d = {d}")
+
+    # print("undirected_dict: ", undirected_dict)
+    # print("directed_dict: ", directed_dict)
+    # go through and add the edges from directed_dict and undirected_dict to G
+    for key, value in directed_dict.items():
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
+    for key, value in undirected_dict.items():
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
+        G.add_arc_with_capacity_and_unit_cost(idDict[key[1]],idDict[key[0]], default_capacity, int(value))
+    
     idDict["maxID"] = curID
     return G,idDict
 
@@ -87,8 +121,9 @@ def write_output_to_sif(G,out_file_name,idDict):
     names = {v: k for k, v in idDict.items()}
     numE = 0
     for i in range(G.num_arcs()):
-        node1 = names[G.head(i)]
-        node2 = names[G.tail(i)]
+        node1 = names[G.tail(i)]
+        node2 = names[G.head(i)]
+        
         flow = G.flow(i)
         if flow <= 0:
             continue
@@ -97,7 +132,17 @@ def write_output_to_sif(G,out_file_name,idDict):
         if node2 in ["source","target"]:
             continue
         numE+=1
-        out_file.write(node1+"\t"+node2+"\n")
+
+        edge = (node1, node2)
+        sorted_edge = tuple(sorted(edge))
+
+        if edge in directed_dict:
+            out_file.write(node1+"\t"+node2+"\t"+"D"+"\n")
+        elif sorted_edge in undirected_dict:
+            out_file.write(node1+"\t"+node2+"\t"+"U"+"\n")
+        else: 
+            raise KeyError(f"edge {edge} is not in the dicts")
+        
     print("Final network had %d edges" % numE)
     out_file.close()
 
