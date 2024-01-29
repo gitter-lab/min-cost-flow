@@ -70,8 +70,8 @@ def construct_digraph(edges_file, cap):
             else:
                 raise ValueError (f"Cannot add edge: d = {d}")
 
-    print("undirected_dict: ", undirected_dict)
-    print("directed_dict: ", directed_dict)
+    # print("undirected_dict: ", undirected_dict)
+    # print("directed_dict: ", directed_dict)
     # go through and add the edges from directed_dict and undirected_dict to G
     for key, value in directed_dict.items():
         G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
