@@ -1,0 +1,5 @@
+A   B   0.9	U
+A   C   0.1	U
+B   D   0.9	U
+C   D   0.1	U
+A   D   0.8	U

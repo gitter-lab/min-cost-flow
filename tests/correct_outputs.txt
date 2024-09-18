@@ -1,0 +1,35 @@
+The tests series of graphs are used to verify whether the code is executing appropriately depending on distinct edge cases.
+
+test 1: check if unique directed edges are added to directed_dict 
+Output:
+A	B	D
+B	C	D
+
+test2: check if higher edge weight is selected for the same directed edge from the input
+Output:
+A	B	D
+B	C	D
+
+test3: If a directed edge is present in the input and an undirected edge from that edge already exists, the directed edge is prioritized and added to directed_dict and the undirected edge is deleted from undirected_dict.
+Output:
+B   C   D
+A   B   D
+
+test4: check if unique undirected edges are added to undirected_dict 
+Output:
+A	B	U
+B	C	U
+
+test5: check that an undirected edge is not added if a directed edge of that edge already exists
+Output:
+A	B	D
+B	C	D
+
+test6: check if higher edge weight is selected for the same undirected edge from the input
+Output:
+A	B	U
+B	C	U
+
+test7: check that code still runs and outputs an error message with an empty edges.txt
+Output:
+N/A
