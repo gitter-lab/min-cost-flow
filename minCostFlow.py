@@ -37,6 +37,10 @@ def construct_digraph(edges_file, cap):
     with open(edges_file) as edges_f:
         for line in edges_f:
             tokens = line.strip().split()
+
+            if len(tokens) != 4 :
+                raise ValueError (f"Each row in the edges file {edges_file} should contain 4 values to define an edge. Currently a row has {len(tokens)} values.")
+
             node1 = tokens[0]
             if not node1 in idDict:
                 idDict[node1] = curID
@@ -49,29 +53,31 @@ def construct_digraph(edges_file, cap):
             w = int((1-(float(tokens[2])))*100) # lower the weight from token[2], higher the cost
             d = tokens[3]
             edge = (node1, node2)
-            sorted_edge = tuple(sorted(edge))
+            sorted_edge = tuple(sorted(edge, reverse=False)) # all undirected edges are sorted edges
+            sorted_edge_reverse = tuple(sorted(edge, reverse=True))
             
             if d == "D":
                 if edge in directed_dict:
-                    if w < directed_dict[edge]:
+                    if w < directed_dict[edge]:  # if weight is lower than the current edge, replace with newer edge weight
                         directed_dict[edge] = w
-                elif sorted_edge in undirected_dict:
+                elif sorted_edge in undirected_dict: # priorize directed edges over undirected edges
                     del undirected_dict[sorted_edge]
                     directed_dict[edge] = w
                 else: # edge not in directed_dict 
                     directed_dict[edge] = w
 
             elif d == "U":
-                if edge not in directed_dict and sorted_edge not in directed_dict and sorted_edge not in undirected_dict:
+                # add new edge to undirected dict; check for edge existing in directed_edges or undirected_dict
+                # if edge == sorted_edge, there is a chance reverse of edge (sorted_edge_reverse) is still in the directed_dict
+                if edge not in directed_dict and sorted_edge not in directed_dict and sorted_edge_reverse not in directed_dict and sorted_edge not in undirected_dict:
                     undirected_dict[sorted_edge] = w
                 elif sorted_edge in undirected_dict:
-                    if w < undirected_dict[sorted_edge]:
+                    if w < undirected_dict[sorted_edge]: # if weight is lower than the current edge, replace with newer edge weight
                         undirected_dict[sorted_edge] = w
             else:
                 raise ValueError (f"Cannot add edge: d = {d}")
 
-    # print("undirected_dict: ", undirected_dict)
-    # print("directed_dict: ", directed_dict)
+    
     # go through and add the edges from directed_dict and undirected_dict to G
     for key, value in directed_dict.items():
         G.add_arc_with_capacity_and_unit_cost(idDict[key[0]],idDict[key[1]], default_capacity, int(value))
@@ -137,9 +143,9 @@ def write_output_to_sif(G,out_file_name,idDict):
         sorted_edge = tuple(sorted(edge))
 
         if edge in directed_dict:
-            out_file.write(node1+"\t"+node2+"\t"+"D"+"\n")
+            out_file.write(edge[0]+"\t"+edge[1]+"\t"+"D"+"\n")
         elif sorted_edge in undirected_dict:
-            out_file.write(node1+"\t"+node2+"\t"+"U"+"\n")
+            out_file.write(sorted_edge[0]+"\t"+sorted_edge[1]+"\t"+"U"+"\n")
         else: 
             raise KeyError(f"edge {edge} is not in the dicts")
         
