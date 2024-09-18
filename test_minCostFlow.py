@@ -1,7 +1,5 @@
 import subprocess
 
-# uncomment line 73 and 74 to check over dictionaries
-
 command = "python"
 script = "minCostFlow.py"
 
